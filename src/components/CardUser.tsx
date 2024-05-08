@@ -3,13 +3,14 @@ import {  Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 interface CardProps {
     name: string;
     value: number;
+    onpress: () => void;
   }
 
-export default function CardUser({name, value}:CardProps) {
+export default function CardUser({name, value, onpress}:CardProps) {
   return (
-    <TouchableOpacity style={styles.container}>
-      <Text>{name}</Text>
-      <Text>Valor pendente{value}</Text>
+    <TouchableOpacity style={styles.container} onPress={onpress}>
+      <Text style={styles.nameTXT}>{name}</Text>
+      <Text style={styles.valueTXT}>Valor pendente R${value}</Text>
       <Text>Click para alterar</Text>
     </TouchableOpacity>
   );
@@ -17,12 +18,40 @@ export default function CardUser({name, value}:CardProps) {
 
 const styles = StyleSheet.create({
     container:{
-      height:80,
-      width:"100%",
+      height:100,
+      width:"90%",
       alignItems:'center',
       justifyContent:'center',
-      borderWidth:1
+      alignSelf:'center',
+      borderWidth:1,
+      margin:5,
+      borderRadius:10,
+      borderColor:'#CC3939',
+      backgroundColor:'#fff'
     },
+    nameTXT:{
+     borderBottomWidth:1,
+     borderBottomColor:'#CC3939',
+     width:"100%",
+     textAlign:'center',
+     marginBottom:5,
+     paddingBottom:5,
+     fontSize:18, 
+     fontWeight:'700',
+     color:'#CC3939'
+    },
+    valueTXT:{
+     //borderWidth:1,
+     width:"90%",
+     textAlign:'center',
+     padding:2,
+     marginBottom:3,
+     borderRadius:10,
+     backgroundColor:'#EE6D72',
+     color:'#fff',
+     fontSize:14,
+     fontWeight:'bold'
+    }
       
     
 })

@@ -41,8 +41,7 @@ export const styles = StyleSheet.create({
       color:'#BC1010',
       textShadowColor: 'rgba(0, 0, 0, 0.5)', // Cor da sombra
       textShadowOffset: { width: 2, height: 2 }, // Deslocamento da sombra
-      textShadowRadius: 5, // Raio da sombra
-      
+      textShadowRadius: 5, // Raio da sombra   
     },
     viewButton:{
       width:'100%',
@@ -62,6 +61,12 @@ export const styles = StyleSheet.create({
         fontWeight:'bold',
         color:'#fff'
     },
-     
+    title:{
+      alignSelf:'center',
+      margin:5,
+      fontSize:20,
+      fontWeight:'bold',
+      color:'#D47474'
+    }
     
 })
