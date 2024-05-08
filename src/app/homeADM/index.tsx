@@ -15,7 +15,7 @@ export default function HomeADM() {
            <Text style={styles.buttonTXT}>Cadastrar Casal</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("listUsers")} >
            <Text style={styles.buttonTXT}>Casais cadastrados</Text>
         </TouchableOpacity>
 
