@@ -32,7 +32,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
 
         <View style={styles.viewPayment}>
           <Text style={styles.titlePayment}>Registrar pagamento</Text>
-          <TextInput style={styles.inputPayment} placeholder='Digite o valor a ser registrado'/>
+          <TextInput style={styles.inputPayment} placeholder='Digite o valor a ser registrado' keyboardType='numeric'/>
           <TouchableOpacity style={styles.buttonPayment}>
             <Text style={styles.buttonTXTPayment}>Salvar</Text>
           </TouchableOpacity>
@@ -55,7 +55,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
             <Text style={styles.flatTXT}>R${item.value}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.date} // Use um identificador único para cada item
+        keyExtractor={(item) => item.date} 
       />
 
         </View>

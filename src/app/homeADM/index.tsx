@@ -1,9 +1,21 @@
-import {  Text, View, Image, TouchableOpacity } from 'react-native';
+import {  Text, View, Image, TouchableOpacity,Alert } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
+import app from '../../firebaseBD/BD';
+import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
+import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
 
 export default function HomeADM() {
   const navigation = useNavigation();
+  const auth = getAuth(app);
+
+  function Logout(){
+    signOut(auth)
+    .catch(error => {
+      console.log(error);
+      return Alert.alert('Sair', 'Não foi possivel sair.');
+    })
+  }
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
@@ -25,6 +37,9 @@ export default function HomeADM() {
 
         <TouchableOpacity style={styles.button} >
            <Text style={styles.buttonTXT}>Editar palavra do dia</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={Logout} >
+           <Text style={styles.buttonTXT}>Sair</Text>
         </TouchableOpacity>
       </View>
     </View>
