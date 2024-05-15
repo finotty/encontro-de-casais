@@ -1,13 +1,40 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {  Text, View, Image, ScrollView, FlatList} from 'react-native';
 import { styles } from './styles';
 import CardUser from '../../components/CardUser';
 import ModalInfoUser from '../../components/ModalInfoUser';
 
+import app from '../../firebaseBD/BD';
+import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
+import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
+import { dateFormat } from '../../utils/FirestoreDateFormat';
+
+
+type ExtractProps = {
+  id:string;
+  date: any;
+  value: number;
+  name: string;
+  key: string;
+};
+
+type OrderProps = {
+  id: string;
+  nameHusband: string;
+  nameWife: string;
+  InitialValue: string;
+  callNumber1:string;
+  callNumber2:string;
+};
+
+
 export default function ListUser() {
   const [visibleModalUser, setVisibleModalUser] = useState(false);
   const [dataDetailsUser, setDataDetailsUser] = useState({});
   const [dataUser, setDataUser] = useState({});
+  const [keyExtract, setKeyExtract] = useState('');
+
+  const db = getFirestore(app);
     const data = [
         { id: '1', name: 'Hugo e Kathelly', value: 200 , 
         extract:[
@@ -48,6 +75,66 @@ export default function ListUser() {
 
      setVisibleModalUser(true);
     }
+
+    useEffect(() => {
+  
+     // setIsloading(true);
+ 
+      
+     const readUsers = async () => {
+      const q = query(collection(db, 'encontro'));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const orders: OrderProps[] = [];
+    
+        querySnapshot.forEach((doc) => {
+          const { nameWife,nameHusband, InitialValue, callNumber1, callNumber2 } = doc.data();
+         
+          
+          orders.push({
+            id: doc.id,
+            nameWife,
+            nameHusband,
+            InitialValue,
+            callNumber1,
+            callNumber2,
+          });
+        });
+
+        console.log(orders);
+      
+      });
+    
+      return unsubscribe;
+    };
+    
+    const readExtract = async () => {
+      const q = query(collection(db, 'extracts'), where ("key","==","2198760484621986958274"));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const orders: ExtractProps[] = [];
+    
+        querySnapshot.forEach((doc) => {
+          const { date, value, name, key } = doc.data();
+         
+          orders.push({
+            id: doc.id,
+            date: dateFormat(date),
+            value,
+            name,
+            key,
+            
+          });
+        });
+
+        console.log(orders);
+      
+      });
+    
+      return unsubscribe;
+    };
+     readUsers();
+     readExtract();
+
+     },[])
 
   return (
     <View style={styles.container}>
