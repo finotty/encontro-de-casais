@@ -1,7 +1,58 @@
-import {  Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, ScrollView } from 'react-native';
+import React,{useState, useEffect,useRef} from 'react';
+import {  Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, ScrollView, Alert,ActivityIndicator } from 'react-native';
 import { styles } from './styles';
+import { useNavigation} from '@react-navigation/native';
+import app from '../../firebaseBD/BD';
+import { getFirestore ,collection,Timestamp,addDoc,query,getDocs} from "firebase/firestore";
 
 export default function RegisterUser() {
+  const [initialValue, setInitialValue] = useState('')
+  const [callNumber1, setCallNumber1] = useState('')
+  const [callNumber2, setCallNumber2] = useState('')
+  const [nameHusband, setNameHusband] = useState('')
+  const [nameWife, setNameWife] = useState('')
+  const [shirtSizeWife, setShirtSizeWife] = useState('')
+  const [shirtSizeHusband, setShirtSizeHusband] = useState('')
+  const [email, setEmail] = useState('')
+  const [weddingDate, setWeddingDate] = useState('')
+  const [numberChildren, setNumberChildren] = useState('')
+  const [isLoading, setIsloading] = useState(false);
+
+  const db = getFirestore(app);
+  const navigation = useNavigation();
+
+  async function RegisterUser(){
+ 
+    if(!initialValue || !callNumber1 || !callNumber2 || !nameHusband || !nameWife || !shirtSizeHusband || !shirtSizeWife || !weddingDate){
+      return Alert.alert('Registrar', 'Preencha todos os campos obrigatórios.');
+    }
+
+    setIsloading(true);
+
+    await addDoc(collection(db, "encontro"), {
+      initialValue,
+      callNumber1,
+      callNumber2,
+      date: Timestamp.now(),
+      nameHusband,
+      nameWife,
+      shirtSizeHusband,
+      shirtSizeWife,
+      email,
+      weddingDate,
+      numberChildren
+    })
+    .then(() => {     
+      Alert.alert('Cadastro','Casal registrado com sucesso.')  
+      navigation.goBack();
+    }).catch(error => {
+      console.log(error);
+      setIsloading(false);
+      return Alert.alert('Cadastro', 'Não foi possivel registrar o casal.');
+    })
+ 
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
@@ -16,9 +67,9 @@ export default function RegisterUser() {
       </View>
 
       <View style={styles.viewInput}>
-        <TextInput style={styles.input} placeholder='Nome do marido'/>
-        <TextInput style={styles.input} placeholder='Telefone'/>
-        <TextInput style={styles.input} placeholder='Tamanho da camiseta'/>
+        <TextInput style={styles.input} placeholder='Nome do marido' value={nameHusband} onChangeText={setNameHusband}/>
+        <TextInput style={styles.input} placeholder='Telefone' value={callNumber1} onChangeText={setCallNumber1} />
+        <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeHusband} onChangeText={setShirtSizeHusband}/>
       </View>
      </View>
 
@@ -28,9 +79,9 @@ export default function RegisterUser() {
           </View>
 
           <View style={styles.viewInput}>
-            <TextInput style={styles.input} placeholder='Nome da esposa'/>
-            <TextInput style={styles.input} placeholder='Telefone'/>
-            <TextInput style={styles.input} placeholder='Tamanho da camiseta'/>
+            <TextInput style={styles.input} placeholder='Nome da esposa' value={nameWife} onChangeText={setNameWife}/>
+            <TextInput style={styles.input} placeholder='Telefone' value={callNumber2} onChangeText={setCallNumber2}/>
+            <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeWife} onChangeText={setShirtSizeWife}/>
           </View>
     </View>
 
@@ -40,17 +91,17 @@ export default function RegisterUser() {
           </View>
 
           <View style={styles.viewInput}>
-            <TextInput style={styles.input} placeholder='Data do casamento'/>
-            <TextInput style={styles.input} placeholder='Número de filhos(opcional)'/>
-            <TextInput style={styles.input} placeholder='E-mail(opcional)'/>
-            <TextInput style={styles.input} placeholder='Valor pago de entrada'/>
+            <TextInput style={styles.input} placeholder='Data do casamento' value={weddingDate} onChangeText={setWeddingDate}/>
+            <TextInput style={styles.input} placeholder='Número de filhos(opcional)' value={numberChildren} onChangeText={setNumberChildren}/>
+            <TextInput style={styles.input} placeholder='E-mail(opcional)' value={email} onChangeText={setEmail}/>
+            <TextInput style={styles.input} placeholder='Valor pago de entrada' value={initialValue} onChangeText={setInitialValue} />
           </View>
     </View>
     </View>
     </ScrollView>
       <View style={styles.viewButton}>
-        <TouchableOpacity style={styles.button} >
-           <Text style={styles.buttonTXT}>Cadastrar</Text>
+        <TouchableOpacity style={styles.button} onPress={RegisterUser} >
+           <Text style={styles.buttonTXT}>{ isLoading==false ? 'Cadastrar' : <ActivityIndicator/>}</Text>
         </TouchableOpacity>
       </View>
     </View>
