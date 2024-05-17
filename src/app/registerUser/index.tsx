@@ -21,6 +21,42 @@ export default function RegisterUser() {
   const db = getFirestore(app);
   const navigation = useNavigation();
 
+  function handleExtractName(){
+   const husband = nameHusband.split(' ');
+   const wife = nameWife.split(' ');
+
+   if (0 >= 0 && 0 < husband.length){
+    //return husband[0]
+    if (0 >= 0 && 0 < wife.length){
+      return (
+        husband[0] + wife[0]
+      )
+    }
+  }
+
+  
+  }
+
+  async function handleRegisterExtract() {
+
+    const name = handleExtractName();
+    const key = callNumber1+callNumber2;
+    
+    console.log("nome do casal: "+name)
+    await addDoc(collection(db, "extracts"), {
+     
+      date: Timestamp.now(),
+      key,
+      name,
+      initialValue
+      
+    })
+    .catch(error => {
+      console.log(error);  
+      return Alert.alert('Registro', 'Não foi possivel registrar o dados de extrato.');
+    })
+  }
+
   async function RegisterUser(){
  
     if(!initialValue || !callNumber1 || !callNumber2 || !nameHusband || !nameWife || !shirtSizeHusband || !shirtSizeWife || !weddingDate){
@@ -28,6 +64,8 @@ export default function RegisterUser() {
     }
 
     setIsloading(true);
+
+    handleRegisterExtract();
 
     await addDoc(collection(db, "encontro"), {
       initialValue,
@@ -50,6 +88,7 @@ export default function RegisterUser() {
       setIsloading(false);
       return Alert.alert('Cadastro', 'Não foi possivel registrar o casal.');
     })
+
  
   }
 
