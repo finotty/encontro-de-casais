@@ -5,8 +5,8 @@ export function dateFormat(timestamp: Timestamp){
         const date = new Date(timestamp.toDate());
 
         const day = date.toLocaleDateString('pt-BR');
-        const hour = date.toLocaleTimeString('pt-BR');
+        //const hour = date.toLocaleTimeString('pt-BR');
 
-        return `${day} às ${hour}`;
+        return `${day}`;
     }
 }

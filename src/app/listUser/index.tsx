@@ -6,33 +6,41 @@ import ModalInfoUser from '../../components/ModalInfoUser';
 
 import app from '../../firebaseBD/BD';
 import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
-import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
+import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp} from "firebase/firestore";
 import { dateFormat } from '../../utils/FirestoreDateFormat';
 
 
 type ExtractProps = {
   id:string;
   date: any;
-  value: number;
+  initialValue: number;
   name: string;
   key: string;
 };
 
 type OrderProps = {
   id: string;
-  nameHusband: string;
-  nameWife: string;
-  InitialValue: string;
   callNumber1:string;
   callNumber2:string;
+  date:any;
+  email:string;
+  initialValue: string;
+  nameHusband: string;
+  nameWife: string;
+  numberChildren:string;
+  shirtSizeHusband:string;
+  shirtSizeWife: string;
+  weddingDate:string;
+  abbreviationName:string;
 };
 
 
 export default function ListUser() {
   const [visibleModalUser, setVisibleModalUser] = useState(false);
   const [dataDetailsUser, setDataDetailsUser] = useState({});
-  const [dataUser, setDataUser] = useState({});
-  const [keyExtract, setKeyExtract] = useState('');
+  const [dataUser, setDataUser] = useState <ExtractProps[]>([]);
+  const [keyExtract, setKeyExtract] = useState<ExtractProps[]>([]);
+  const [listUsers, setListUsers] = useState <OrderProps[]>([]);
 
   const db = getFirestore(app);
     const data = [
@@ -67,72 +75,81 @@ export default function ListUser() {
         return [];
       };
 
-    function handleDetailUser(data:any){
-     const flatListData = getExtractData(data);
+    function handleDetailUser(number1:string,number2:string, data:any){
+     const key = number1+number2;
+     readExtract(key);
      
-     setDataUser(flatListData);
+     //console.log("Teste: ")
+     //setDataUser(flatListData.);
      setDataDetailsUser(data);
 
      setVisibleModalUser(true);
     }
 
-    useEffect(() => {
-  
-     // setIsloading(true);
- 
-      
-     const readUsers = async () => {
-      const q = query(collection(db, 'encontro'));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const orders: OrderProps[] = [];
-    
-        querySnapshot.forEach((doc) => {
-          const { nameWife,nameHusband, InitialValue, callNumber1, callNumber2 } = doc.data();
-         
-          
-          orders.push({
-            id: doc.id,
-            nameWife,
-            nameHusband,
-            InitialValue,
-            callNumber1,
-            callNumber2,
-          });
-        });
-
-        console.log(orders);
-      
-      });
-    
-      return unsubscribe;
-    };
-    
-    const readExtract = async () => {
-      const q = query(collection(db, 'extracts'), where ("key","==","2198760484621986958274"));
+    const readExtract = async (key:string) => {
+      const q = query(collection(db, 'extracts'), where ("key","==",key));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const orders: ExtractProps[] = [];
     
         querySnapshot.forEach((doc) => {
-          const { date, value, name, key } = doc.data();
+          const { date, initialValue, name, key } = doc.data();
          
           orders.push({
             id: doc.id,
             date: dateFormat(date),
-            value,
+            initialValue,
             name,
             key,
             
           });
         });
 
-        console.log(orders);
+        setDataUser(orders);
+      //  console.log(orders);
       
       });
     
       return unsubscribe;
     };
+
+    useEffect(() => {
+  
+     // setIsloading(true);
+ 
+     const readUsers = async () => {
+      const q = query(collection(db, 'encontro'));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const orders: OrderProps[] = [];
+    
+        querySnapshot.forEach((doc) => {
+          const {abbreviationName, nameWife,nameHusband, initialValue, callNumber1, callNumber2,date,email,numberChildren,shirtSizeHusband,shirtSizeWife,weddingDate } = doc.data();
+                 
+          orders.push({
+            id: doc.id,
+            callNumber1,
+            callNumber2,
+            date:dateFormat(date),
+            email,
+            initialValue,
+            nameHusband,
+            nameWife,
+            numberChildren,
+            shirtSizeHusband,
+            shirtSizeWife,
+            weddingDate,
+            abbreviationName,
+          });
+          
+        });
+
+        //console.log(orders);
+        setListUsers(orders);
+      });
+    
+      return unsubscribe;
+    } 
+
      readUsers();
-     readExtract();
 
      },[])
 
@@ -143,8 +160,8 @@ export default function ListUser() {
       </View>
       <Text style={styles.title}>LISTA DE CASAIS</Text>
       <FlatList
-      data={data}
-      renderItem={({ item }) => <CardUser name={item.name} value={item.value} onpress={() => handleDetailUser(item)} />}
+      data={listUsers}
+      renderItem={({ item }) => <CardUser name={item.abbreviationName} value={item.initialValue} onpress={() => handleDetailUser(item.callNumber1, item.callNumber2, item)} />}
       keyExtractor={(item) => item.id}
     />
 

@@ -2,7 +2,7 @@ import {  Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 interface CardProps {
     name: string;
-    value: number;
+    value: string;
     onpress: () => void;
   }
 

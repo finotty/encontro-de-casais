@@ -1,9 +1,9 @@
-import React,{useState, useEffect,useRef} from 'react';
-import {  Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, ScrollView, Alert,ActivityIndicator } from 'react-native';
+import React,{useState} from 'react';
+import {  Text, View, Image, TouchableOpacity, TextInput, ScrollView, Alert,ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import { useNavigation} from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getFirestore ,collection,Timestamp,addDoc,query,getDocs} from "firebase/firestore";
+import { getFirestore ,collection,Timestamp,addDoc} from "firebase/firestore";
 
 export default function RegisterUser() {
   const [initialValue, setInitialValue] = useState('')
@@ -26,30 +26,23 @@ export default function RegisterUser() {
    const wife = nameWife.split(' ');
 
    if (0 >= 0 && 0 < husband.length){
-    //return husband[0]
     if (0 >= 0 && 0 < wife.length){
       return (
-        husband[0] + wife[0]
+        husband[0] +" & "+ wife[0]
       )
     }
-  }
-
-  
-  }
+  }}
 
   async function handleRegisterExtract() {
 
     const name = handleExtractName();
     const key = callNumber1+callNumber2;
-    
-    console.log("nome do casal: "+name)
-    await addDoc(collection(db, "extracts"), {
-     
+
+    await addDoc(collection(db, "extracts"), {     
       date: Timestamp.now(),
       key,
       name,
       initialValue
-      
     })
     .catch(error => {
       console.log(error);  
@@ -78,7 +71,8 @@ export default function RegisterUser() {
       shirtSizeWife,
       email,
       weddingDate,
-      numberChildren
+      numberChildren,
+      abbreviationName:nameHusband+" & "+nameWife,
     })
     .then(() => {     
       Alert.alert('Cadastro','Casal registrado com sucesso.')  
@@ -133,7 +127,7 @@ export default function RegisterUser() {
             <TextInput style={styles.input} placeholder='Data do casamento' value={weddingDate} onChangeText={setWeddingDate}/>
             <TextInput style={styles.input} placeholder='Número de filhos(opcional)' value={numberChildren} onChangeText={setNumberChildren}/>
             <TextInput style={styles.input} placeholder='E-mail(opcional)' value={email} onChangeText={setEmail}/>
-            <TextInput style={styles.input} placeholder='Valor pago de entrada' value={initialValue} onChangeText={setInitialValue} />
+            <TextInput style={styles.input} placeholder='Valor pago de entrada' value={initialValue} onChangeText={setInitialValue} keyboardType='numeric'/>
           </View>
     </View>
     </View>
