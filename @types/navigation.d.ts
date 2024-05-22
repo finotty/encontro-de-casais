@@ -6,6 +6,7 @@ export declare global {
             listUsers:undefined;
             registerUser:undefined;
             login:undefined;
+            selectEvent:undefined;
         }
     }
 }
