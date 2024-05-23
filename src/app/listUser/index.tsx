@@ -3,12 +3,16 @@ import {  Text, View, Image, ScrollView, FlatList} from 'react-native';
 import { styles } from './styles';
 import CardUser from '../../components/CardUser';
 import ModalInfoUser from '../../components/ModalInfoUser';
+import { useRoute } from '@react-navigation/native';
 
 import app from '../../firebaseBD/BD';
 import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
 import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp} from "firebase/firestore";
 import { dateFormat } from '../../utils/FirestoreDateFormat';
 
+type RouteParams ={
+  event: string;
+}
 
 type ExtractProps = {
   id:string;
@@ -42,39 +46,11 @@ export default function ListUser() {
   const [keyExtract, setKeyExtract] = useState<ExtractProps[]>([]);
   const [listUsers, setListUsers] = useState <OrderProps[]>([]);
 
-  const db = getFirestore(app);
-    const data = [
-        { id: '1', name: 'Hugo e Kathelly', value: 200 , 
-        extract:[
-          {date:'10/01/2024', value:251},
-          {date:'10/02/2024', value:152},
-          {date:'10/03/2024', value:353},
-       ] 
-        },
-        { id: '2', name: 'Zedequias e Ozana', value: 300, 
-        extract:[
-          {date:'10/01/2024', value:250},
-          {date:'10/02/2024', value:150},
-          {date:'10/03/2024', value:350},
-       ]  },
-        { id: '3', name: 'Lucas e Angel', value: 350, 
-        extract:[
-          {date:'10/01/2024', value:250},
-          {date:'10/02/2024', value:150},
-          {date:'10/03/2024', value:350},
-       ]  },
-      ];
-     
-      const getExtractData = (item:any) => {
-        if (item.extract) {
-          return item.extract.map((extractItem:any) => ({   
-            date: extractItem.date,
-            value: extractItem.value,
-          }));
-        }
-        return [];
-      };
+  const route = useRoute();
+  const {event} = route.params as RouteParams;
 
+  const db = getFirestore(app);
+ 
     function handleDetailUser(number1:string,number2:string, data:any){
      const key = number1+number2;
      readExtract(key);
@@ -117,7 +93,7 @@ export default function ListUser() {
      // setIsloading(true);
  
      const readUsers = async () => {
-      const q = query(collection(db, 'encontro'));
+      const q = query(collection(db, event));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const orders: OrderProps[] = [];
     

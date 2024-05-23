@@ -1,11 +1,12 @@
 import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, TouchableOpacity,Alert,FlatList } from 'react-native';
+import {  Text, View, Image, TouchableOpacity,Alert,FlatList, Button } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
 import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
 import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
 import CardEvent from '../../components/CardEvent';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 
 type OrderProps = {
@@ -16,20 +17,21 @@ type OrderProps = {
 
 export default function SelectEvent() {
   const navigation = useNavigation();
-  const db = getFirestore(app);;
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
   const [listEvents, setListEvents] = useState <OrderProps[]>([]);
 
   function Logout(){
-   // signOut(auth)
-  //  .catch(error => {
-  //    console.log(error);
-  //    return Alert.alert('Sair', 'Não foi possivel sair.');
- //   })
+    signOut(auth)
+    .catch(error => {
+      console.log(error);
+      return Alert.alert('Sair', 'Não foi possivel sair.');
+    })
   }
 
-  function handleDetailUser(){
-
+  function handleDetailUser(event:string){
+    navigation.navigate('homeAdm', {event});
    }
 
   useEffect(() => {
@@ -65,12 +67,15 @@ export default function SelectEvent() {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={{alignSelf:'flex-start', marginLeft:10}} onPress={Logout}>
+       <SimpleLineIcons name="logout" size={24} color="black" />
+      </TouchableOpacity>
       <View style={styles.logo}>
           <Image source={require('../../assets/logo.png')} style={{ height:110, resizeMode:'contain'}}/>
       </View>
 
       <View style={styles.viewButton}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("registerUser")}>
+        <TouchableOpacity style={styles.button} onPress={() => alert('')}>
            <Text style={styles.buttonTXT}>Criar Evento</Text>
         </TouchableOpacity>
 
@@ -80,11 +85,13 @@ export default function SelectEvent() {
 
         <FlatList
         data={listEvents}
-        renderItem={({ item }) => <CardEvent name={item.name} onpress={() => handleDetailUser()} />}
+        renderItem={({ item }) => <CardEvent name={item.name} onpress={() => handleDetailUser(item.name)} />}
         keyExtractor={(item) => item.id}
         />
 
       </View>
+
+      
     </View>
   );
 }

@@ -1,9 +1,13 @@
 import React,{useState} from 'react';
 import {  Text, View, Image, TouchableOpacity, TextInput, ScrollView, Alert,ActivityIndicator } from 'react-native';
 import { styles } from './styles';
-import { useNavigation} from '@react-navigation/native';
+import { useNavigation, useRoute} from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
 import { getFirestore ,collection,Timestamp,addDoc} from "firebase/firestore";
+
+type RouteParams ={
+  event: string;
+}
 
 export default function RegisterUser() {
   const [initialValue, setInitialValue] = useState('')
@@ -20,6 +24,9 @@ export default function RegisterUser() {
 
   const db = getFirestore(app);
   const navigation = useNavigation();
+
+  const route = useRoute();
+  const {event} = route.params as RouteParams;
 
   function handleExtractName(){
    const husband = nameHusband.split(' ');
@@ -60,7 +67,7 @@ export default function RegisterUser() {
 
     handleRegisterExtract();
 
-    await addDoc(collection(db, "encontro"), {
+    await addDoc(collection(db, event), {
       initialValue,
       callNumber1,
       callNumber2,
