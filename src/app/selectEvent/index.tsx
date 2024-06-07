@@ -1,10 +1,10 @@
 import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, TouchableOpacity,Alert,FlatList, Button } from 'react-native';
+import {  Text, View, Image, TouchableOpacity,Alert,FlatList } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
-import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
+import { getAuth, signOut} from "firebase/auth";
+import { getFirestore ,collection, query, onSnapshot} from "firebase/firestore";
 import CardEvent from '../../components/CardEvent';
 import { SimpleLineIcons } from '@expo/vector-icons';
 
@@ -75,7 +75,7 @@ export default function SelectEvent() {
       </View>
 
       <View style={styles.viewButton}>
-        <TouchableOpacity style={styles.button} onPress={() => alert('')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('createEvent')}>
            <Text style={styles.buttonTXT}>Criar Evento</Text>
         </TouchableOpacity>
 

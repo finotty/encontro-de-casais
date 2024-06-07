@@ -7,6 +7,7 @@ export declare global {
             registerUser:{event: string};
             login:undefined;
             selectEvent:undefined;
+            createEvent:undefined;
         }
     }
 }
