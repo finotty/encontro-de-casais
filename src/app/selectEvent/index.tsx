@@ -12,7 +12,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 type OrderProps = {
   id: string;
   name:string;
-  payments:string;
+ // payments:string;
 };
 
 export default function SelectEvent() {
@@ -30,31 +30,27 @@ export default function SelectEvent() {
     })
   }
 
-  function handleDetailUser(event:string){
+  function handleSelectEvent(event:string){
     navigation.navigate('homeAdm', {event});
-   }
+  }
 
   useEffect(() => {
   
-    // setIsloading(true);
-
     const readUsers = async () => {
-     const q = query(collection(db, 'Events'));
-     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-       const orders: OrderProps[] = [];
+    const q = query(collection(db, 'Events'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const orders: OrderProps[] = [];
    
        querySnapshot.forEach((doc) => {
-         const {name, payments } = doc.data();
+         const {name } = doc.data();
                 
          orders.push({
            id: doc.id,
-           name,
-           payments
+           name
          });
          
        });
 
-       //console.log(orders);
        setListEvents(orders);
      });
    
@@ -84,9 +80,11 @@ export default function SelectEvent() {
         <Text style={styles.txtTitle}>Eventos cadastrados</Text>
 
         <FlatList
-        data={listEvents}
-        renderItem={({ item }) => <CardEvent name={item.name} onpress={() => handleDetailUser(item.name)} />}
-        keyExtractor={(item) => item.id}
+         showsVerticalScrollIndicator={false}
+         style={{paddingTop:15, paddingBottom:10}}
+         data={listEvents}
+         renderItem={({ item }) => <CardEvent name={item.name} onpress={() => handleSelectEvent(item.name)} />}
+         keyExtractor={(item) => item.id}
         />
 
       </View>

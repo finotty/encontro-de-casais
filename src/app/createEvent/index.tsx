@@ -1,19 +1,12 @@
-import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, TouchableOpacity,Alert,TextInput,ScrollView } from 'react-native';
+import React,{useState} from 'react';
+import {  Text, View, Image, TouchableOpacity,Alert,TextInput,ScrollView, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getAuth, signOut} from "firebase/auth";
-import { getFirestore ,collection, query, onSnapshot, addDoc} from "firebase/firestore";
-import CardEvent from '../../components/CardEvent';
+import { getAuth} from "firebase/auth";
+import { getFirestore ,collection, addDoc} from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
-
-
-type OrderProps = {
-  id: string;
-  name:string;
-  payments:string;
-};
+import { TextInputMask } from 'react-native-masked-text';
 
 export default function CreateEvent() {
   const navigation = useNavigation();
@@ -26,7 +19,7 @@ export default function CreateEvent() {
   const [valueEvent, setValueEvent] = useState("")
   const [isLoading, setIsloading] = useState(false);
 
-  async function RegisterUser(){
+  async function handleRegisterEvent(){
  
     if(!nameEvent || !localEvent || !dateEvent || !valueEvent){
       return Alert.alert('Registrar', 'Preencha todos os campos obrigatórios.');
@@ -77,20 +70,34 @@ export default function CreateEvent() {
            value={localEvent}
            onChangeText={setLocalEvent}
            />
-          <TextInput style={styles.input} 
-           placeholder='Data do evento'
-           value={dateEvent}
-           onChangeText={setDateEvent}
-           />
-          <TextInput style={styles.input}
-           placeholder='Valor do evento'
-           value={valueEvent}
-           onChangeText={setValueEvent}
-           />
+         <TextInputMask
+            type={'datetime'}
+            options={{
+              format: 'DD/MM/YYYY',
+            }}
+            value={dateEvent}
+            onChangeText={setDateEvent}
+            style={styles.input}
+            placeholder='Data do evento'
+          />
+         <TextInputMask
+        type={'money'}
+        options={{
+          precision: 2,
+          separator: ',',
+          delimiter: '.',
+          unit: 'R$ ',
+          suffixUnit: '',
+        }}
+        value={valueEvent}
+        onChangeText={setValueEvent}
+        style={styles.input}
+        placeholder='Valor do evento'
+      />
 
         <View style={styles.viewButton}>  
-          <TouchableOpacity style={styles.button} onPress={() => alert("nome: "+nameEvent)}>
-            <Text style={styles.buttonTXT}>Salvar</Text>
+          <TouchableOpacity style={styles.button} onPress={handleRegisterEvent}>
+            <Text style={styles.buttonTXT}>{ isLoading==false ? 'Salvar' : <ActivityIndicator/>}</Text>
           </TouchableOpacity>
         </View>
         </ScrollView>

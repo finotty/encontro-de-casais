@@ -17,7 +17,7 @@ type RouteParams ={
 type ExtractProps = {
   id:string;
   date: any;
-  initialValue: number;
+  value: number;
   name: string;
   key: string;
 };
@@ -29,6 +29,7 @@ type OrderProps = {
   date:any;
   email:string;
   initialValue: string;
+  currentValue:number;
   nameHusband: string;
   nameWife: string;
   numberChildren:string;
@@ -38,6 +39,12 @@ type OrderProps = {
   abbreviationName:string;
 };
 
+type EventProps = {
+  id:string;
+  date:string;
+  value:string;
+}
+
 
 export default function ListUser() {
   const [visibleModalUser, setVisibleModalUser] = useState(false);
@@ -45,7 +52,8 @@ export default function ListUser() {
   const [dataUser, setDataUser] = useState <ExtractProps[]>([]);
   const [keyExtract, setKeyExtract] = useState<ExtractProps[]>([]);
   const [listUsers, setListUsers] = useState <OrderProps[]>([]);
-
+  const [eventValue, setEventValue] = useState (0);
+ 
   const route = useRoute();
   const {event} = route.params as RouteParams;
 
@@ -62,18 +70,23 @@ export default function ListUser() {
      setVisibleModalUser(true);
     }
 
+    const convertToNumber = (value:any) => {
+      const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
+      return parseFloat(cleanedValue);
+    };
+
     const readExtract = async (key:string) => {
       const q = query(collection(db, 'extracts'), where ("key","==",key));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const orders: ExtractProps[] = [];
     
         querySnapshot.forEach((doc) => {
-          const { date, initialValue, name, key } = doc.data();
+          const { date, value, name, key } = doc.data();
          
           orders.push({
             id: doc.id,
             date: dateFormat(date),
-            initialValue,
+            value,
             name,
             key,
             
@@ -81,24 +94,32 @@ export default function ListUser() {
         });
 
         setDataUser(orders);
-      //  console.log(orders);
-      
+ 
       });
     
       return unsubscribe;
     };
 
     useEffect(() => {
-  
-     // setIsloading(true);
+     const readEvent = async () => {
+     const q = query(collection(db, 'Events'), where ("name","==",event));
+     const events = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const { date,value } = doc.data();
+          const valueFloat = convertToNumber(value);     
+          setEventValue(valueFloat);
+          });  
+      });    
+      return events;
+    } 
  
      const readUsers = async () => {
       const q = query(collection(db, event));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const orders: OrderProps[] = [];
+      const orders: OrderProps[] = [];
     
         querySnapshot.forEach((doc) => {
-          const {abbreviationName, nameWife,nameHusband, initialValue, callNumber1, callNumber2,date,email,numberChildren,shirtSizeHusband,shirtSizeWife,weddingDate } = doc.data();
+          const {abbreviationName, nameWife,nameHusband, initialValue,currentValue, callNumber1, callNumber2,date,email,numberChildren,shirtSizeHusband,shirtSizeWife,weddingDate } = doc.data();
                  
           orders.push({
             id: doc.id,
@@ -107,6 +128,7 @@ export default function ListUser() {
             date:dateFormat(date),
             email,
             initialValue,
+            currentValue,
             nameHusband,
             nameWife,
             numberChildren,
@@ -114,17 +136,16 @@ export default function ListUser() {
             shirtSizeWife,
             weddingDate,
             abbreviationName,
-          });
-          
+          });    
         });
 
-        //console.log(orders);
         setListUsers(orders);
       });
     
       return unsubscribe;
     } 
 
+     readEvent();
      readUsers();
 
      },[])
@@ -135,9 +156,10 @@ export default function ListUser() {
           <Image source={require('../../assets/hearts.png')} style={{width:"100%", height:150, resizeMode:'cover'}}/>
       </View>
       <Text style={styles.title}>LISTA DE CASAIS</Text>
+    
       <FlatList
       data={listUsers}
-      renderItem={({ item }) => <CardUser name={item.abbreviationName} value={item.initialValue} onpress={() => handleDetailUser(item.callNumber1, item.callNumber2, item)} />}
+      renderItem={({ item }) => <CardUser name={item.abbreviationName} value={item.currentValue} onpress={() => handleDetailUser(item.callNumber1, item.callNumber2, item)} />}
       keyExtractor={(item) => item.id}
     />
 

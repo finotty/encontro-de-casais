@@ -28,7 +28,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
             <Text style={styles.buttonCloseTXT}>X</Text>
          </TouchableOpacity>
         </View>
-        <Text style={styles.valueTXT}>Valor pendente R${data.initialValue}</Text>
+        <Text style={styles.valueTXT}>Valor pendente R${data.currentValue}</Text>
 
         <View style={styles.viewPayment}>
           <Text style={styles.titlePayment}>Registrar pagamento</Text>
@@ -52,7 +52,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
           <View style={styles.viewFlat}>   
             <Text style={styles.flatTXT}>{item.date}</Text>
             <Text> </Text>
-            <Text style={styles.flatTXT}>R${item.initialValue}</Text>
+            <Text style={styles.flatTXT}>R${item.value}</Text>
           </View>
         )}
         keyExtractor={(item) => item.date} 
