@@ -53,6 +53,8 @@ export default function ListUser() {
   const [keyExtract, setKeyExtract] = useState<ExtractProps[]>([]);
   const [listUsers, setListUsers] = useState <OrderProps[]>([]);
   const [eventValue, setEventValue] = useState (0);
+  const [keyDoc, setKeyDoc] = useState('');
+  const [curValue, setCurValue] = useState(0);
  
   const route = useRoute();
   const {event} = route.params as RouteParams;
@@ -61,6 +63,7 @@ export default function ListUser() {
  
     function handleDetailUser(number1:string,number2:string, data:any){
      const key = number1+number2;
+     setKeyDoc(key);
      readExtract(key);
      
      //console.log("Teste: ")
@@ -136,9 +139,11 @@ export default function ListUser() {
             shirtSizeWife,
             weddingDate,
             abbreviationName,
-          });    
-        });
+          }); 
 
+         setCurValue(currentValue)
+        });
+        
         setListUsers(orders);
       });
     
@@ -163,7 +168,7 @@ export default function ListUser() {
       keyExtractor={(item) => item.id}
     />
 
-    <ModalInfoUser visible={visibleModalUser} onClose={() => setVisibleModalUser(false)} data={dataDetailsUser} dataFlat={dataUser}/>
+    <ModalInfoUser visible={visibleModalUser} onClose={() => setVisibleModalUser(false)} data={dataDetailsUser} dataFlat={dataUser} event={event} keyDoc={keyDoc} curValue={curValue}/>
     </View>
   );
 }

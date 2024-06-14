@@ -1,15 +1,62 @@
-import React from 'react';
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native';
+import app from '../firebaseBD/BD';
+import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp, addDoc, updateDoc, doc} from "firebase/firestore";
+import { TextInputMask } from 'react-native-masked-text';
 
 interface ModalProps {
   visible: boolean;
   onClose: () => void;
   data:any;
   dataFlat:any;
+  event:string;
+  keyDoc:string;
+  curValue:number;
 }
 
-const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat }) => {
-  
+const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, event, keyDoc, curValue }) => {
+
+  const [value, setValue] = useState('');
+  const db = getFirestore(app);
+  const convertToNumber = (value:any) => {
+    const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
+    return parseFloat(cleanedValue);
+  };
+
+  async function handleRegisterExtract() {
+    await addDoc(collection(db, "extracts"), {     
+      date: Timestamp.now(),
+      key:keyDoc,
+      name:data.abbreviationName,
+      value:value
+    })
+    .catch(error => {
+      console.log(error);  
+      return Alert.alert('Registro', 'Não foi possivel registrar o dados de extrato.');
+    })
+  }
+
+  async function handleUpdateCurrentValue() {
+    const valueConvert = convertToNumber(value);
+    const currentValue = data.currentValue - valueConvert;
+    const id = data.id;
+    await updateDoc(doc(db, event, id), {
+      currentValue:currentValue,
+     })
+     .then(() => {
+      Alert.alert('Solicitação','Pagamento Registrado!') 
+      setValue('');  
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+  }
+
+  function handlePayment(){
+   handleRegisterExtract();
+   handleUpdateCurrentValue();
+  }
+
   return (
     <Modal
      style={{backgroundColor:'#09090A'}}
@@ -28,12 +75,25 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
             <Text style={styles.buttonCloseTXT}>X</Text>
          </TouchableOpacity>
         </View>
-        <Text style={styles.valueTXT}>Valor pendente R${data.currentValue}</Text>
+        <Text style={styles.valueTXT}>Valor pendente R${curValue}</Text>
 
         <View style={styles.viewPayment}>
           <Text style={styles.titlePayment}>Registrar pagamento</Text>
-          <TextInput style={styles.inputPayment} placeholder='Digite o valor a ser registrado' keyboardType='numeric'/>
-          <TouchableOpacity style={styles.buttonPayment}>
+          <TextInputMask
+             type={'money'}
+             options={{
+              precision: 2,
+              separator: ',',
+              delimiter: '.',
+              unit: 'R$ ',
+              suffixUnit: '',
+            }}
+            value={value}
+            onChangeText={setValue}
+            style={styles.inputPayment} 
+            placeholder='Digite o valor a ser registrado' 
+            keyboardType='numeric'/>
+          <TouchableOpacity style={styles.buttonPayment} onPress={() => handlePayment()}>
             <Text style={styles.buttonTXTPayment}>Salvar</Text>
           </TouchableOpacity>
         </View>
@@ -52,7 +112,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat })
           <View style={styles.viewFlat}>   
             <Text style={styles.flatTXT}>{item.date}</Text>
             <Text> </Text>
-            <Text style={styles.flatTXT}>R${item.value}</Text>
+            <Text style={styles.flatTXT}>{item.value}</Text>
           </View>
         )}
         keyExtractor={(item) => item.date} 

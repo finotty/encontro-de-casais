@@ -68,6 +68,7 @@ export default function RegisterUser() {
     handleRegisterExtract();
 
     const initValue = convertToNumber(initialValue);
+    const name = handleExtractName();
 
     await addDoc(collection(db, event), {
       initialValue,
@@ -82,7 +83,7 @@ export default function RegisterUser() {
       email,
       weddingDate,
       numberChildren,
-      abbreviationName:nameHusband+" & "+nameWife,
+      abbreviationName:name,
     })
     .then(() => {     
       Alert.alert('Cadastro','Casal registrado com sucesso.')  
