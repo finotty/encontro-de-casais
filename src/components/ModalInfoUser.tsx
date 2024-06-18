@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native';
 import app from '../firebaseBD/BD';
 import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp, addDoc, updateDoc, doc} from "firebase/firestore";
@@ -14,9 +14,9 @@ interface ModalProps {
   curValue:number;
 }
 
-const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, event, keyDoc, curValue }) => {
-
+const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, event, keyDoc , curValue}) => {
   const [value, setValue] = useState('');
+  const [currentValu, setCurrentValue]= useState(0);
   const db = getFirestore(app);
   const convertToNumber = (value:any) => {
     const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
@@ -55,7 +55,22 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
   function handlePayment(){
    handleRegisterExtract();
    handleUpdateCurrentValue();
+   readCurValue();
   }
+
+  const readCurValue = async () => {
+      
+    const q = query(collection(db, event), where ("key","==",keyDoc));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => { 
+      querySnapshot.forEach((doc) => {
+        const { currentValue } = doc.data();
+         setCurrentValue(currentValue)  
+      });    
+    });      
+    return unsubscribe;
+
+  };
+  
 
   return (
     <Modal
@@ -75,7 +90,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
             <Text style={styles.buttonCloseTXT}>X</Text>
          </TouchableOpacity>
         </View>
-        <Text style={styles.valueTXT}>Valor pendente R${curValue}</Text>
+        <Text style={styles.valueTXT}>Valor pendente R${(currentValu > 0) ? currentValu : curValue }</Text>
 
         <View style={styles.viewPayment}>
           <Text style={styles.titlePayment}>Registrar pagamento</Text>
@@ -115,7 +130,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
             <Text style={styles.flatTXT}>{item.value}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.date} 
+        keyExtractor={(item) => item.id} 
       />
 
         </View>

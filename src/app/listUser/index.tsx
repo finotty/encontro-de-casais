@@ -37,6 +37,7 @@ type OrderProps = {
   shirtSizeWife: string;
   weddingDate:string;
   abbreviationName:string;
+  key:string;
 };
 
 type EventProps = {
@@ -65,12 +66,14 @@ export default function ListUser() {
      const key = number1+number2;
      setKeyDoc(key);
      readExtract(key);
-     
+     readCurValue(key);
      //console.log("Teste: ")
      //setDataUser(flatListData.);
      setDataDetailsUser(data);
 
      setVisibleModalUser(true);
+
+    
     }
 
     const convertToNumber = (value:any) => {
@@ -103,6 +106,14 @@ export default function ListUser() {
       return unsubscribe;
     };
 
+    const readCurValue = (key:string) => {
+      const value = listUsers.map((item) => {
+        if ((item.callNumber1+item.callNumber2) == key){
+         return setCurValue(item.currentValue)
+        }
+      })
+    };
+
     useEffect(() => {
      const readEvent = async () => {
      const q = query(collection(db, 'Events'), where ("name","==",event));
@@ -122,7 +133,7 @@ export default function ListUser() {
       const orders: OrderProps[] = [];
     
         querySnapshot.forEach((doc) => {
-          const {abbreviationName, nameWife,nameHusband, initialValue,currentValue, callNumber1, callNumber2,date,email,numberChildren,shirtSizeHusband,shirtSizeWife,weddingDate } = doc.data();
+          const {abbreviationName, nameWife,nameHusband, initialValue,currentValue, callNumber1, callNumber2,date,email,numberChildren,shirtSizeHusband,shirtSizeWife,weddingDate,key } = doc.data();
                  
           orders.push({
             id: doc.id,
@@ -139,9 +150,9 @@ export default function ListUser() {
             shirtSizeWife,
             weddingDate,
             abbreviationName,
+            key
           }); 
 
-         setCurValue(currentValue)
         });
         
         setListUsers(orders);
@@ -168,7 +179,7 @@ export default function ListUser() {
       keyExtractor={(item) => item.id}
     />
 
-    <ModalInfoUser visible={visibleModalUser} onClose={() => setVisibleModalUser(false)} data={dataDetailsUser} dataFlat={dataUser} event={event} keyDoc={keyDoc} curValue={curValue}/>
+    <ModalInfoUser visible={visibleModalUser} onClose={() => setVisibleModalUser(false)} data={dataDetailsUser} dataFlat={dataUser} event={event} keyDoc={keyDoc} curValue={curValue} />
     </View>
   );
 }

@@ -50,7 +50,7 @@ export default function RegisterUser() {
       date: Timestamp.now(),
       key,
       name,
-      initialValue
+      value:initialValue
     })
     .catch(error => {
       console.log(error);  
@@ -69,6 +69,7 @@ export default function RegisterUser() {
 
     const initValue = convertToNumber(initialValue);
     const name = handleExtractName();
+    const key = callNumber1+callNumber2;
 
     await addDoc(collection(db, event), {
       initialValue,
@@ -84,6 +85,7 @@ export default function RegisterUser() {
       weddingDate,
       numberChildren,
       abbreviationName:name,
+      key:key
     })
     .then(() => {     
       Alert.alert('Cadastro','Casal registrado com sucesso.')  
@@ -131,8 +133,16 @@ export default function RegisterUser() {
 
       <View style={styles.viewInput}>
         <TextInput style={styles.input} placeholder='Nome do marido' value={nameHusband} onChangeText={setNameHusband}/>
-        <TextInput style={styles.input} placeholder='Telefone' value={callNumber1} onChangeText={setCallNumber1} />
-        <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeHusband} onChangeText={setShirtSizeHusband}/>
+        <TextInputMask 
+             type={'cel-phone'}
+             options={{
+               format: '([00] [00000]-[0000])',
+             }}
+         style={styles.input} 
+         placeholder='Telefone' 
+         value={callNumber1} 
+         onChangeText={setCallNumber1} />
+        <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeHusband} onChangeText={text => setShirtSizeHusband(text.toUpperCase())}/>
       </View>
      </View>
 
@@ -143,8 +153,16 @@ export default function RegisterUser() {
 
           <View style={styles.viewInput}>
             <TextInput style={styles.input} placeholder='Nome da esposa' value={nameWife} onChangeText={setNameWife}/>
-            <TextInput style={styles.input} placeholder='Telefone' value={callNumber2} onChangeText={setCallNumber2}/>
-            <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeWife} onChangeText={setShirtSizeWife}/>
+            <TextInputMask 
+             type={'cel-phone'}
+             options={{
+               format: '([00] [00000]-[0000])',
+             }}
+             style={styles.input}
+             placeholder='Telefone' 
+             value={callNumber2} 
+             onChangeText={setCallNumber2}/>
+            <TextInput style={styles.input} placeholder='Tamanho da camiseta' value={shirtSizeWife} onChangeText={text => setShirtSizeWife(text.toLocaleUpperCase())}/>
           </View>
     </View>
 
@@ -164,7 +182,7 @@ export default function RegisterUser() {
              value={weddingDate} 
              onChangeText={setWeddingDate}
              />
-            <TextInput style={styles.input} placeholder='Número de filhos(opcional)' value={numberChildren} onChangeText={setNumberChildren}/>
+            <TextInput style={styles.input} placeholder='Número de filhos(opcional)' value={numberChildren} onChangeText={setNumberChildren} keyboardType='numeric'/>
             <TextInput style={styles.input} placeholder='E-mail(opcional)' value={email} onChangeText={setEmail}/>
             <TextInputMask
              type={'money'}

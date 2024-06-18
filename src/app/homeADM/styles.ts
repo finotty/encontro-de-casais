@@ -11,10 +11,10 @@ export const styles = StyleSheet.create({
     },
     logo:{
         marginTop:20,
-       // marginBottom:10
+        marginBottom:15
       },
       viewButton:{
-        flex:1,
+        flex:2,
         width:'80%',
        // marginTop:50,
         marginBottom:20,
@@ -34,5 +34,24 @@ export const styles = StyleSheet.create({
           fontWeight:'bold',
           color:'#fff'
       },
+      eventView:{
+        backgroundColor:'#e5e5e5',
+        width:'79%',
+        flex:1,
+        borderRadius:10,
+        
+        alignItems:'center'
+      },
+      eventNameTXT:{
+        fontSize:20,
+        fontWeight:'bold',
+        alignSelf:'center',
+        marginBottom:1,
+        marginTop:4
+      },
+      eventDescription:{
+       //marginLeft:10,
+       fontSize:16
+      }
     
 })
