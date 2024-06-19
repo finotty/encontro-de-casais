@@ -3,7 +3,7 @@ import {  Text, View, Image, TouchableOpacity, TextInput, ScrollView, Alert,Acti
 import { styles } from './styles';
 import { useNavigation, useRoute} from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getFirestore ,collection,Timestamp,addDoc, query, onSnapshot,where} from "firebase/firestore";
+import { getFirestore ,collection,Timestamp,addDoc, query, onSnapshot,where, updateDoc, doc} from "firebase/firestore";
 import { TextInputMask } from 'react-native-masked-text';
 
 type RouteParams ={
@@ -23,6 +23,8 @@ export default function RegisterUser() {
   const [numberChildren, setNumberChildren] = useState('')
   const [isLoading, setIsloading] = useState(false);
   const [eventValue, setEventValue] = useState (0);
+  const [eventId, setEventId] = useState('');
+  const [eventVacances, setEventVacances] = useState(0);
 
   const db = getFirestore(app);
   const navigation = useNavigation();
@@ -57,6 +59,22 @@ export default function RegisterUser() {
       return Alert.alert('Registro', 'Não foi possivel registrar o dados de extrato.');
     })
   }
+ 
+async function handleUpdateVacances() {
+  
+    await updateDoc(doc(db, "Events", eventId), {
+      occupiedvacancies:eventVacances + 2,
+      })
+     .then(() => {
+      console.log('registrado sem erros!') 
+       
+    })
+    .catch((error) => {
+      console.log(error);
+      })
+      }
+  
+
   async function RegisterUser(){
  
     if(!initialValue || !callNumber1 || !callNumber2 || !nameHusband || !nameWife || !shirtSizeHusband || !shirtSizeWife || !weddingDate){
@@ -66,6 +84,7 @@ export default function RegisterUser() {
     setIsloading(true);
 
     handleRegisterExtract();
+    
 
     const initValue = convertToNumber(initialValue);
     const name = handleExtractName();
@@ -89,6 +108,7 @@ export default function RegisterUser() {
     })
     .then(() => {     
       Alert.alert('Cadastro','Casal registrado com sucesso.')  
+      handleUpdateVacances();
       navigation.goBack();
     }).catch(error => {
       console.log(error);
@@ -108,9 +128,11 @@ export default function RegisterUser() {
       const q = query(collection(db, 'Events'), where ("name","==",event));
       const events = onSnapshot(q, (querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          const { date,value } = doc.data();
+          const { date,value,occupiedVacances } = doc.data();
           const valueFloat = convertToNumber(value);     
           setEventValue(valueFloat);
+          setEventId(doc.id)
+          setEventVacances(occupiedVacances);
           });  
       });    
       return events;

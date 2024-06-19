@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
       },
       eventDescription:{
        //marginLeft:10,
-       fontSize:16
+       fontSize:14
       }
     
 })

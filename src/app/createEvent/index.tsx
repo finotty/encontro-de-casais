@@ -16,8 +16,14 @@ export default function CreateEvent() {
   const [nameEvent, setNameEvent] = useState("");
   const [localEvent, setLocalEvent] = useState("");
   const [dateEvent, setDateEvent] = useState("");
-  const [valueEvent, setValueEvent] = useState("")
+  const [valueEvent, setValueEvent] = useState("");
+  const [numberVacances, setNumberVacances] = useState('');
   const [isLoading, setIsloading] = useState(false);
+
+  const convertToNumber = (value:any) => {
+    const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
+    return parseFloat(cleanedValue);
+  };
 
   async function handleRegisterEvent(){
  
@@ -31,7 +37,9 @@ export default function CreateEvent() {
       name:nameEvent,
       local:localEvent,
       date:dateEvent,
-      value:valueEvent
+      value:valueEvent,
+      numberVacances:convertToNumber(numberVacances),
+      occupiedvacancies:0
     })
     .then(() => {     
       Alert.alert('Evento','Evento registrado com sucesso.')  
@@ -94,7 +102,13 @@ export default function CreateEvent() {
         style={styles.input}
         placeholder='Valor do evento'
       />
-
+       <TextInput
+          keyboardType='numeric'
+          value={numberVacances}
+          onChangeText={setNumberVacances}
+          style={styles.input}
+          placeholder='Número de vagas'
+        />
         <View style={styles.viewButton}>  
           <TouchableOpacity style={styles.button} onPress={handleRegisterEvent}>
             <Text style={styles.buttonTXT}>{ isLoading==false ? 'Salvar' : <ActivityIndicator/>}</Text>

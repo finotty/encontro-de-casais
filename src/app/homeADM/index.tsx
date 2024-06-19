@@ -3,7 +3,6 @@ import {  Text, View, Image, TouchableOpacity,Alert } from 'react-native';
 import { styles } from './styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
 import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
 
 type RouteParams ={
@@ -14,23 +13,26 @@ export default function HomeADM() {
   const [eventValue,setEventValue] = useState('');
   const [eventDate, setEventDate]= useState('');
   const [eventLocal, setEventLocal] = useState('');
+  const [eventVacancy, setEventVacancy] = useState(0);
+  const [eventOccupiedvacancies, setEventOccupiedvacancies] = useState(0);
+
   const navigation = useNavigation();
   const db = getFirestore(app);
 
   const route = useRoute();
   const {event} = route.params as RouteParams;
 
-
-
   useEffect(() => {
     const readEvent = async () => {
     const q = query(collection(db, 'Events'), where ("name","==",event));
     const events = onSnapshot(q, (querySnapshot) => {
        querySnapshot.forEach((doc) => {
-         const { date,value, local } = doc.data();
+         const { date,value, local, numberVacances,occupiedvacancies } = doc.data();
          setEventDate(date);
          setEventValue(value);
          setEventLocal(local);
+         setEventVacancy(numberVacances);
+         setEventOccupiedvacancies(occupiedvacancies);
          });  
      });    
      return events;
@@ -47,12 +49,12 @@ export default function HomeADM() {
       
       <View style={styles.eventView}>
         <Text style={styles.eventNameTXT}>{event}</Text>
-        <Text style={styles.eventDescription}>Valor por casal: R${eventValue} </Text>
+        <Text style={styles.eventDescription}>Valor por casal: {eventValue} </Text>
         <Text style={styles.eventDescription}>Data : {eventDate}</Text>
         <Text style={styles.eventDescription}>Local:</Text>
-        <Text style={[styles.eventDescription,{marginBottom:2,color:'red'}]}>{eventLocal}</Text>
-        <Text style={styles.eventDescription}>Total de vagas: </Text>
-        <Text style={styles.eventDescription}>Vagas preenchidas: </Text>
+        <Text style={[styles.eventDescription,{marginBottom:2,color:'red', textAlign:'center'}]}>{eventLocal}</Text>
+        <Text style={styles.eventDescription}>Total de vagas: {eventVacancy}</Text>
+        <Text style={styles.eventDescription}>Vagas preenchidas: {eventOccupiedvacancies}</Text>
       </View>
       <View style={styles.viewButton}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("registerUser",{event})}>
