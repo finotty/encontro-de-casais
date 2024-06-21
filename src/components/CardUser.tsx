@@ -1,4 +1,4 @@
-import {  Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {  Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 interface CardProps {
     name: string;
@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
      color:'#CC3939'
     },
     valueTXT:{
-     //borderWidth:1,
      width:"90%",
      textAlign:'center',
      padding:2,

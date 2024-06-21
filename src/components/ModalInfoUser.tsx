@@ -1,7 +1,7 @@
-import React,{useState,useEffect} from 'react';
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, FlatList, Alert } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, Modal, StyleSheet, TouchableOpacity, FlatList, Alert, ActivityIndicator } from 'react-native';
 import app from '../firebaseBD/BD';
-import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp, addDoc, updateDoc, doc} from "firebase/firestore";
+import { getFirestore ,collection, query, where, onSnapshot, Timestamp, addDoc, updateDoc, doc} from "firebase/firestore";
 import { TextInputMask } from 'react-native-masked-text';
 
 interface ModalProps {
@@ -17,6 +17,7 @@ interface ModalProps {
 const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, event, keyDoc , curValue}) => {
   const [value, setValue] = useState('');
   const [currentValu, setCurrentValue]= useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const db = getFirestore(app);
   const convertToNumber = (value:any) => {
     const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
@@ -53,25 +54,27 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
   }
 
   function handlePayment(){
+    if(!value){
+      return Alert.alert('Aviso','É preciso informar algum valor para salvar');
+    }
+    setIsLoading(true);
    handleRegisterExtract();
    handleUpdateCurrentValue();
    readCurValue();
   }
 
-  const readCurValue = async () => {
-      
+  const readCurValue = async () => {     
     const q = query(collection(db, event), where ("key","==",keyDoc));
     const unsubscribe = onSnapshot(q, (querySnapshot) => { 
       querySnapshot.forEach((doc) => {
         const { currentValue } = doc.data();
          setCurrentValue(currentValue)  
       });    
-    });      
+    });  
+    setIsLoading(false);    
     return unsubscribe;
-
   };
   
-
   return (
     <Modal
      style={{backgroundColor:'#09090A'}}
@@ -83,7 +86,6 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
 
     >
       <View style={styles.container}>
-
         <View style={styles.viewHead}>
          <Text style={styles.nameTXT}>{data.abbreviationName}</Text>
          <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
@@ -108,8 +110,8 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
             style={styles.inputPayment} 
             placeholder='Digite o valor a ser registrado' 
             keyboardType='numeric'/>
-          <TouchableOpacity style={styles.buttonPayment} onPress={() => handlePayment()}>
-            <Text style={styles.buttonTXTPayment}>Salvar</Text>
+          <TouchableOpacity style={styles.buttonPayment} onPress={() => handlePayment()} disabled={isLoading}>
+            <Text style={styles.buttonTXTPayment}>{isLoading == false ?'Salvar' : <ActivityIndicator/>}</Text>
           </TouchableOpacity>
         </View>
 

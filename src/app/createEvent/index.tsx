@@ -3,7 +3,6 @@ import {  Text, View, Image, TouchableOpacity,Alert,TextInput,ScrollView, Activi
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getAuth} from "firebase/auth";
 import { getFirestore ,collection, addDoc} from "firebase/firestore";
 import { AntDesign } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
@@ -11,7 +10,6 @@ import { TextInputMask } from 'react-native-masked-text';
 export default function CreateEvent() {
   const navigation = useNavigation();
   const db = getFirestore(app);
-  const auth = getAuth(app);
 
   const [nameEvent, setNameEvent] = useState("");
   const [localEvent, setLocalEvent] = useState("");
@@ -49,8 +47,6 @@ export default function CreateEvent() {
       setIsloading(false);
       return Alert.alert('Evento', 'Não foi possivel registrar o Evento.');
     })
-
- 
   }
 
   return (
@@ -89,18 +85,18 @@ export default function CreateEvent() {
             placeholder='Data do evento'
           />
          <TextInputMask
-        type={'money'}
-        options={{
-          precision: 2,
-          separator: ',',
-          delimiter: '.',
-          unit: 'R$ ',
-          suffixUnit: '',
-        }}
-        value={valueEvent}
-        onChangeText={setValueEvent}
-        style={styles.input}
-        placeholder='Valor do evento'
+          type={'money'}
+          options={{
+           precision: 2,
+           separator: ',',
+           delimiter: '.',
+           unit: 'R$ ',
+           suffixUnit: '',
+           }}
+          value={valueEvent}
+          onChangeText={setValueEvent}
+          style={styles.input}
+          placeholder='Valor do evento'
       />
        <TextInput
           keyboardType='numeric'
@@ -116,8 +112,6 @@ export default function CreateEvent() {
         </View>
         </ScrollView>
       </View>
-
-    
     </View>
   );
 }

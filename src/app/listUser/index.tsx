@@ -1,14 +1,13 @@
 import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, ScrollView, FlatList} from 'react-native';
+import {  Text, View, FlatList, ImageBackground, TouchableOpacity} from 'react-native';
 import { styles } from './styles';
 import CardUser from '../../components/CardUser';
 import ModalInfoUser from '../../components/ModalInfoUser';
-import { useRoute } from '@react-navigation/native';
-
+import { useRoute, useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getAuth, signOut,onAuthStateChanged} from "firebase/auth";
-import { getFirestore ,collection, query, where, getDocs,onSnapshot, Timestamp} from "firebase/firestore";
+import { getFirestore ,collection, query, where,onSnapshot} from "firebase/firestore";
 import { dateFormat } from '../../utils/FirestoreDateFormat';
+import { AntDesign } from '@expo/vector-icons';
 
 type RouteParams ={
   event: string;
@@ -40,24 +39,16 @@ type OrderProps = {
   key:string;
 };
 
-type EventProps = {
-  id:string;
-  date:string;
-  value:string;
-}
-
-
 export default function ListUser() {
   const [visibleModalUser, setVisibleModalUser] = useState(false);
   const [dataDetailsUser, setDataDetailsUser] = useState({});
   const [dataUser, setDataUser] = useState <ExtractProps[]>([]);
-  const [keyExtract, setKeyExtract] = useState<ExtractProps[]>([]);
   const [listUsers, setListUsers] = useState <OrderProps[]>([]);
-  const [eventValue, setEventValue] = useState (0);
   const [keyDoc, setKeyDoc] = useState('');
   const [curValue, setCurValue] = useState(0);
  
   const route = useRoute();
+  const navigation = useNavigation();
   const {event} = route.params as RouteParams;
 
   const db = getFirestore(app);
@@ -67,19 +58,9 @@ export default function ListUser() {
      setKeyDoc(key);
      readExtract(key);
      readCurValue(key);
-     //console.log("Teste: ")
-     //setDataUser(flatListData.);
      setDataDetailsUser(data);
-
      setVisibleModalUser(true);
-
-    
     }
-
-    const convertToNumber = (value:any) => {
-      const cleanedValue = value.replace(/[^0-9,]/g, '').replace(',', '.');
-      return parseFloat(cleanedValue);
-    };
 
     const readExtract = async (key:string) => {
       const q = query(collection(db, 'extracts'), where ("key","==",key));
@@ -115,19 +96,8 @@ export default function ListUser() {
     };
 
     useEffect(() => {
-     const readEvent = async () => {
-     const q = query(collection(db, 'Events'), where ("name","==",event));
-     const events = onSnapshot(q, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const { date,value } = doc.data();
-          const valueFloat = convertToNumber(value);     
-          setEventValue(valueFloat);
-          });  
-      });    
-      return events;
-    } 
- 
-     const readUsers = async () => {
+
+      const readUsers = async () => {
       const q = query(collection(db, event));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const orders: OrderProps[] = [];
@@ -160,8 +130,6 @@ export default function ListUser() {
     
       return unsubscribe;
     } 
-
-     readEvent();
      readUsers();
 
      },[])
@@ -169,7 +137,11 @@ export default function ListUser() {
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
-          <Image source={require('../../assets/hearts.png')} style={{width:"100%", height:150, resizeMode:'cover'}}/>
+          <ImageBackground source={require('../../assets/hearts.png')} style={{width:"100%", height:150}}>
+           <TouchableOpacity style={{marginLeft:5, marginTop:5}} onPress={() => navigation.goBack()}>
+            <AntDesign name="arrowleft" size={24} color="white" />
+           </TouchableOpacity>
+          </ImageBackground>
       </View>
       <Text style={styles.title}>LISTA DE CASAIS</Text>
     

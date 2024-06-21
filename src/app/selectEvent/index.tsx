@@ -8,11 +8,9 @@ import { getFirestore ,collection, query, onSnapshot} from "firebase/firestore";
 import CardEvent from '../../components/CardEvent';
 import { SimpleLineIcons } from '@expo/vector-icons';
 
-
 type OrderProps = {
   id: string;
   name:string;
- // payments:string;
 };
 
 export default function SelectEvent() {
@@ -35,7 +33,6 @@ export default function SelectEvent() {
   }
 
   useEffect(() => {
-  
     const readUsers = async () => {
     const q = query(collection(db, 'Events'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -87,9 +84,7 @@ export default function SelectEvent() {
          keyExtractor={(item) => item.id}
         />
 
-      </View>
-
-      
+      </View>  
     </View>
   );
 }

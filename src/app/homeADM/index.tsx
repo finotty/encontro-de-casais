@@ -1,9 +1,10 @@
 import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, TouchableOpacity,Alert } from 'react-native';
+import {  Text, View, Image, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
-import { getFirestore ,collection, query, where, getDocs,onSnapshot} from "firebase/firestore";
+import { getFirestore ,collection, query, where,onSnapshot} from "firebase/firestore";
+import { AntDesign } from '@expo/vector-icons';
 
 type RouteParams ={
   event: string;
@@ -43,6 +44,9 @@ export default function HomeADM() {
     },[])
   return (
     <View style={styles.container}>
+       <TouchableOpacity style={{alignSelf:'flex-start', marginLeft:10}} onPress={() => navigation.goBack()}>
+       <AntDesign name="arrowleft" size={24} color="black" />
+      </TouchableOpacity>
       <View style={styles.logo}>
           <Image source={require('../../assets/logo.png')} style={{ height:110, resizeMode:'contain'}}/>
       </View>
@@ -65,15 +69,15 @@ export default function HomeADM() {
            <Text style={styles.buttonTXT}>Casais cadastrados</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.button}  >
+           <Text style={styles.buttonTXT}>Gerar relatório</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} >
            <Text style={styles.buttonTXT}>Emitir anúncio</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} >
            <Text style={styles.buttonTXT}>Editar palavra do dia</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()} >
-           <Text style={styles.buttonTXT}>Inicio</Text>
         </TouchableOpacity>
       </View>
     </View>
