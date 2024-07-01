@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {  Text, TextInput, View, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import app from '../../firebaseBD/BD';
@@ -6,12 +6,22 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default function Loguin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsloading] = useState(false);
 
   const auth = getAuth(app);
+
+  const storeData = async (email:string,password:string) => {
+    try {
+      await AsyncStorage.setItem('email/', email);
+      await AsyncStorage.setItem('pwd/', password)
+    } catch (e) {
+       console.log("erro ao recuperar email")
+    }
+  }
 
   function handleSignIn() {
     const emailmerge = (email + '@encontro.com').toLowerCase();
@@ -21,6 +31,9 @@ export default function Loguin() {
     }
 
     signInWithEmailAndPassword(auth,emailmerge, password)
+    .then(() => {
+      storeData(emailmerge,password);
+    })
     .catch((error) => {
      console.log(error.code);
       if(error.code =='auth/user-not-found'){
@@ -43,6 +56,21 @@ export default function Loguin() {
    
   }
 
+ useEffect(() => {
+  const getData = async () => {
+    try {
+      const emailr = await AsyncStorage.getItem('email/')
+      const passwordr = await AsyncStorage.getItem('pwd/')
+      if(emailr !== null && passwordr !== null) {
+        signInWithEmailAndPassword(auth,emailr, passwordr)
+      }
+    } catch(e) {
+      console.log("erro ao ler email");
+    }
+  }
+
+  getData();
+ },[])
   return (
     <View style={styles.container}>
       <View style={styles.logo}>

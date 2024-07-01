@@ -7,6 +7,7 @@ import { getAuth, signOut} from "firebase/auth";
 import { getFirestore ,collection, query, onSnapshot} from "firebase/firestore";
 import CardEvent from '../../components/CardEvent';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type OrderProps = {
   id: string;
@@ -20,8 +21,19 @@ export default function SelectEvent() {
 
   const [listEvents, setListEvents] = useState <OrderProps[]>([]);
 
+  const removeAccount = async () => {
+    try {
+      await AsyncStorage.removeItem('email/');
+      await AsyncStorage.removeItem('pwd/');
+    } catch(e) {
+      console.log('erro ao remover no asyncStore')     
+    }
+  }
+
   function Logout(){
+    removeAccount()
     signOut(auth)
+   
     .catch(error => {
       console.log(error);
       return Alert.alert('Sair', 'Não foi possivel sair.');
