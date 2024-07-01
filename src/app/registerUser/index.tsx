@@ -122,7 +122,6 @@ export default function RegisterUser() {
           setEventValue(valueFloat);
           setEventId(doc.id)
           setEventVacances(occupiedvacancies);
-          console.log(occupiedvacancies)
           });  
       });    
       return events;
@@ -139,7 +138,7 @@ export default function RegisterUser() {
            </TouchableOpacity>
           </ImageBackground>
       </View>
-     <ScrollView> 
+     <ScrollView showsVerticalScrollIndicator={false}> 
      <View style={styles.subContainer}>
 
       <View style={styles.viewCard}>

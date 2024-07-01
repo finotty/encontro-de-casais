@@ -69,14 +69,14 @@ export default function HomeADM() {
            <Text style={styles.buttonTXT}>Casais cadastrados</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}  >
+        <TouchableOpacity style={[styles.button,{backgroundColor:'#a09d9d'}]} onPress={() => alert('Função em desenvolvimento')} >
            <Text style={styles.buttonTXT}>Gerar relatório</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={[styles.button,{backgroundColor:'#a09d9d'}]} onPress={() => alert('Função em desenvolvimento')} >
            <Text style={styles.buttonTXT}>Emitir anúncio</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={[styles.button,{backgroundColor:'#a09d9d'}]} onPress={() => alert('Função em desenvolvimento')} >
            <Text style={styles.buttonTXT}>Editar palavra do dia</Text>
         </TouchableOpacity>
       </View>

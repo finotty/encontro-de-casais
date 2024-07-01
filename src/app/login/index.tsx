@@ -1,21 +1,19 @@
-import {useState,useEffect} from 'react';
+import {useState} from 'react';
 import {  Text, TextInput, View, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import app from '../../firebaseBD/BD';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { getAuth } from "firebase/auth";
-import {useNavigation} from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Loguin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsloading] = useState(false);
-  const navigation = useNavigation();
+
   const auth = getAuth(app);
 
   function handleSignIn() {
-   // setIsloading(true);
     const emailmerge = (email + '@encontro.com').toLowerCase();
     if(!email || !password){
       setIsloading(false)
@@ -79,15 +77,13 @@ export default function Loguin() {
 
       <View style={styles.viewVersic}>
         <Text style={styles.versicTXT}>
-        2 Coríntios 13:4-8 {'\n'}
+        2 Coríntios 13:4-8 {'\n\n'}
         O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha. 
         Não maltrata, não procura seus interesses, não se ira facilmente, não guarda rancor. 
         O amor não se alegra com a injustiça, mas se alegra com a verdade. Tudo sofre, tudo crê, tudo espera, tudo suporta.
         </Text>
       </View>
 
-
-      
     </View>
   );
 }

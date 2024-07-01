@@ -137,7 +137,7 @@ const ModalInfoUser: React.FC<ModalProps> = ({ visible, onClose,data,dataFlat, e
 
         </View>
 
-        <TouchableOpacity style={styles.buttonCancel}>
+        <TouchableOpacity style={styles.buttonCancel} onPress={() => alert('função em desenvolvimento')}>
             <Text style={styles.buttonTXTCancel}>Cancelar inscrição</Text>
           </TouchableOpacity>
       </View>    
