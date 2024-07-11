@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#DCD0B7"
     },
     "ios": {
       "supportsTablet": true
@@ -17,12 +17,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#DCD0B7"
       },
       "package": "com.encontrodecasais"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "81f8c32f-9fe0-453b-bd90-eba14eb0b92e"
+      }
     }
   }
 }

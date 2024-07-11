@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {  Text, TextInput, View, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { styles } from './styles';
-import app from '../../firebaseBD/BD';
+import {app} from '../../firebaseBD/BD';
 import { signInWithEmailAndPassword } from "firebase/auth"; 
 import { getAuth } from "firebase/auth";
 import AsyncStorage from '@react-native-async-storage/async-storage';

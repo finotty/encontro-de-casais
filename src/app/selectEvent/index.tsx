@@ -2,7 +2,7 @@ import React,{useState, useEffect} from 'react';
 import {  Text, View, Image, TouchableOpacity,Alert,FlatList,ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
-import app from '../../firebaseBD/BD';
+import {app} from '../../firebaseBD/BD';
 import { getAuth, signOut} from "firebase/auth";
 import { getFirestore ,collection, query, onSnapshot} from "firebase/firestore";
 import CardEvent from '../../components/CardEvent';
