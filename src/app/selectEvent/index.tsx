@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react';
-import {  Text, View, Image, TouchableOpacity,Alert,FlatList } from 'react-native';
+import {  Text, View, Image, TouchableOpacity,Alert,FlatList,ActivityIndicator } from 'react-native';
 import { styles } from './styles';
 import { useNavigation } from '@react-navigation/native';
 import app from '../../firebaseBD/BD';
@@ -88,6 +88,7 @@ export default function SelectEvent() {
       <View style={styles.viewCard}>
         <Text style={styles.txtTitle}>Eventos cadastrados</Text>
 
+       { listEvents ?
         <FlatList
          showsVerticalScrollIndicator={false}
          style={{paddingTop:15, paddingBottom:10}}
@@ -95,6 +96,10 @@ export default function SelectEvent() {
          renderItem={({ item }) => <CardEvent name={item.name} onpress={() => handleSelectEvent(item.name)} />}
          keyExtractor={(item) => item.id}
         />
+       :
+        <ActivityIndicator size={100} color="#EE6D72"/>
+       }
+      
 
       </View>  
     </View>

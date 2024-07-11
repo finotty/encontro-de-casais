@@ -25,7 +25,8 @@ export const styles = StyleSheet.create({
     },
     viewTextWelcome:{
       marginTop:20,
-      marginBottom:10
+      marginBottom:10,
+      width:'80%'
     },
     textWelcome:{
       fontSize:16,
